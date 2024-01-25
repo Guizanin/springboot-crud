@@ -1,8 +1,5 @@
 package med.voll.api.medico;
 
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PutMapping;
-
 public record DadosListagemMedico(
         Long id,
         String nome,
