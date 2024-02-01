@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/paciente")
+@RequestMapping("pacientes")
 public class PacienteController {
 
     @Autowired
@@ -20,25 +20,28 @@ public class PacienteController {
 
     @PostMapping
     @Transactional
-    public void cadastraPaciente(@RequestBody @Valid DadosCadastroPaciente dados){
+    public void cadastrar(@RequestBody @Valid DadosCadastroPaciente dados) {
         repository.save(new Paciente(dados));
     }
 
     @GetMapping
-    public Page<DadosListagemPacientes> listar(@PageableDefault(size=10, sort = {"nome"}) Pageable paginacao){
-        return repository.findAll(paginacao).map(DadosListagemPacientes::new);
+    public Page<DadosListagemPaciente> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
+        return repository.findAllByAtivoTrue(paginacao).map(DadosListagemPaciente::new);
     }
 
     @PutMapping
     @Transactional
-    public void atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados){
+    public void atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados) {
         var paciente = repository.getReferenceById(dados.id());
-        paciente.atualizaPaciente(dados);
+        paciente.atualizarInformacoes(dados);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public void excluir(@PathVariable Long id){
-        repository.deleteById(id);
+    public void excluir(@PathVariable Long id) {
+        var paciente = repository.getReferenceById(id);
+        paciente.excluir();
     }
+
+
 }
